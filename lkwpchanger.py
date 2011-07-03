@@ -15,7 +15,7 @@ import sys
 import time
 
 VERSION = '0.0.0.20110703'
-PICTURES_PATH = ".\\pictures"
+PICTURES_PATH = sys.path[0] + "\\pictures"
 BACKGROUND_IM = os.environ['USERPROFILE'] + \
      '\\Local Settings\\Application Data\\Microsoft\\Wallpaper1.bmp'
 SPI_SETDESKWALLPAPER = 20
