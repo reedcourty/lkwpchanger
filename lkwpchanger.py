@@ -15,7 +15,7 @@ import sys
 import time
 import datetime
 
-VERSION = '0.0.0.20110703'
+VERSION = '0.0.0.20110704'
 PICTURES_PATH = sys.path[0] + "\\pictures"
 BACKGROUND_IM = os.environ['USERPROFILE'] + \
      '\\Local Settings\\Application Data\\Microsoft\\Wallpaper1.bmp'
@@ -88,12 +88,14 @@ class Pictures():
         
         OK = False
         
+        self.create_filelist()
+        
         while not OK:
             self.get_next_picture()
         
             self.convert_to_bmp()
-        
-            if self.get_hash(self.act_picture) != self.get_hash(BACKGROUND_IM):
+            
+            if (len(self.filelist) <= 1) or (self.get_hash(self.act_picture) != self.get_hash(BACKGROUND_IM)):
                 OK = True
             else:
                 os.remove(self.act_picture)
