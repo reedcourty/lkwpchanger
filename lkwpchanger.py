@@ -13,6 +13,7 @@ import ctypes
 import shutil
 import sys
 import time
+import datetime
 
 VERSION = '0.0.0.20110703'
 PICTURES_PATH = sys.path[0] + "\\pictures"
@@ -90,19 +91,27 @@ class Pictures():
         while not OK:
             self.get_next_picture()
         
-            converted = self.convert_to_bmp()
+            self.convert_to_bmp()
         
             if self.get_hash(self.act_picture) != self.get_hash(BACKGROUND_IM):
                 OK = True
-            
+            else:
+                os.remove(self.act_picture)
+                     
         shutil.copyfile(self.act_picture, BACKGROUND_IM)
-        if converted:
-            os.remove(self.act_picture)
+        os.remove(self.act_picture)
         ctypes.windll.user32.SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, BACKGROUND_IM, SPIF_SENDWININICHANGE)
    
     def get_image_type(self):
         img = Image.open(self.act_picture)
         return img.format
+
+    def get_converted_filename(self):
+        now = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = PICTURES_PATH + '\\converted-' + now + '.bmp'
+        if self.options.debug_mode:
+            print(filename)
+        return filename
 
     def png_to_bmp(self, png_image):
         img = Image.open(png_image)
@@ -110,26 +119,30 @@ class Pictures():
         if len(img.split()) == 4:
             r, g, b, a = img.split()
             img = Image.merge("RGB", (r, g, b))
-        img.save(png_image + '.bmp')
-        self.act_picture = png_image + '.bmp'
+        filename = self.get_converted_filename()
+        img.save(filename)
+        self.act_picture = filename
     
     def jpg_to_bmp(self, jpg_image):
         img = Image.open(jpg_image)
-        img.save(jpg_image + '.bmp')
-        self.act_picture = jpg_image + '.bmp'
+        filename = self.get_converted_filename()
+        img.save(filename)
+        self.act_picture = filename
+        
+    def bmp_to_bmp(self, bmp_image):
+        filename = self.get_converted_filename()
+        shutil.copyfile(bmp_image, filename)
+        self.act_picture = filename
         
     def convert_to_bmp(self):
         itype = self.get_image_type()
     
         if itype == 'BMP':
-            return False
-        else:
-            if itype == 'PNG':
-                self.png_to_bmp(self.act_picture)
-            if itype == 'JPEG':
-                self.jpg_to_bmp(self.act_picture)
-            return True
-
+            self.bmp_to_bmp(self.act_picture)
+        if itype == 'PNG':
+            self.png_to_bmp(self.act_picture)
+        if itype == 'JPEG':
+            self.jpg_to_bmp(self.act_picture)
 
 if __name__ == "__main__":
     
