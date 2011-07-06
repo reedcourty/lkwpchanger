@@ -15,7 +15,7 @@ import sys
 import time
 import datetime
 
-VERSION = '0.0.0.20110704'
+VERSION = '0.0.0.20110706'
 PICTURES_PATH = sys.path[0] + "\\pictures"
 BACKGROUND_IM = os.environ['USERPROFILE'] + \
      '\\Local Settings\\Application Data\\Microsoft\\Wallpaper1.bmp'
@@ -64,8 +64,8 @@ class Pictures():
                 
         if options.debug_mode:
             print("The contents of " + self.options.pictures + " directory: ")
-            for f in self.filelist:
-                print("\t" + f)
+            for entry in self.filelist:
+                print("\t" + entry)
     
     def get_filelist(self):
         return self.filelist
@@ -95,14 +95,19 @@ class Pictures():
         
             self.convert_to_bmp()
             
-            if (len(self.filelist) <= 1) or (self.get_hash(self.act_picture) != self.get_hash(BACKGROUND_IM)):
+            if (len(self.filelist) <= 1) or \
+                (self.get_hash(self.act_picture) \
+                != self.get_hash(BACKGROUND_IM)):
                 is_new_image = True
             else:
                 os.remove(self.act_picture)
                      
         shutil.copyfile(self.act_picture, BACKGROUND_IM)
         os.remove(self.act_picture)
-        ctypes.windll.user32.SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, BACKGROUND_IM, SPIF_SENDWININICHANGE)
+        ctypes.windll.user32.SystemParametersInfoA(SPI_SETDESKWALLPAPER,
+                                                   0,
+                                                   BACKGROUND_IM,
+                                                   SPIF_SENDWININICHANGE)
    
     def get_image_type(self):
         img = Image.open(self.act_picture)
