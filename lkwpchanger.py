@@ -6,7 +6,6 @@ lkwpchanger
 
 import os
 import argparse
-import hashlib
 import random
 import Image
 import ctypes
@@ -14,6 +13,8 @@ import shutil
 import sys
 import time
 import datetime
+
+from hasher import get_hash
 
 VERSION = '0.0.0.20110706'
 PICTURES_PATH = sys.path[0] + "\\pictures"
@@ -78,12 +79,6 @@ class Pictures():
         except ValueError:
             sys.exit("The " + self.options.pictures + " directory is empty. :(")
     
-    def get_hash(self, picture):
-        picture_file = open(picture, 'r')
-        content = picture_file.read()
-        picture_file.close()
-        return(hashlib.md5(content).hexdigest())
-    
     def change(self):
         
         is_new_image = False
@@ -95,9 +90,15 @@ class Pictures():
         
             self.convert_to_bmp()
             
+            if self.options.debug_mode:
+                pic_act = self.act_picture.split("\\")
+                pic_pre = BACKGROUND_IM.split("\\")
+                print(get_hash(self.act_picture), pic_act[len(pic_act)-1])
+                print(get_hash(BACKGROUND_IM), pic_pre[len(pic_pre)-1])
+            
             if (len(self.filelist) <= 1) or \
-                (self.get_hash(self.act_picture) \
-                != self.get_hash(BACKGROUND_IM)):
+                (get_hash(self.act_picture) \
+                != get_hash(BACKGROUND_IM)):
                 is_new_image = True
             else:
                 os.remove(self.act_picture)
