@@ -16,7 +16,8 @@ import datetime
 
 from hasher import get_hash
 
-VERSION = '0.0.0.20110706'
+VERSION = (0, 0, 0, 'alpha', 20110706)
+
 PICTURES_PATH = sys.path[0] + "\\pictures"
 BACKGROUND_IM = os.environ['USERPROFILE'] + \
      '\\Local Settings\\Application Data\\Microsoft\\Wallpaper1.bmp'
@@ -168,8 +169,11 @@ if __name__ == "__main__":
                     dest='debug_mode',
                     help='Set debug mode on')
     
+    prog_version = "%s.%s.%s.%s" % (VERSION[0], VERSION[1],
+                                    VERSION[2], VERSION[4])
+    
     parser.add_argument('--version', '-v', action='version',
-                    version='%(prog)s '+VERSION)
+                    version='%(prog)s ' + prog_version) 
     
     options = Options(parser.parse_args())
     
