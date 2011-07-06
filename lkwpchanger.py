@@ -59,8 +59,8 @@ class Pictures():
                 os.mkdir(options.pictures)
             try:
                 self.filelist = os.listdir(options.pictures)
-            except WindowsError as e:
-                sys.exit(e.strerror + ': ' + self.options.pictures)
+            except WindowsError as error:
+                sys.exit(error.strerror + ': ' + self.options.pictures)
                 
         if options.debug_mode:
             print("The contents of " + self.options.pictures + " directory: ")
@@ -79,24 +79,24 @@ class Pictures():
             sys.exit("The " + self.options.pictures + " directory is empty. :(")
     
     def get_hash(self, picture):
-        f = open(picture, 'r')
-        content = f.read()
-        f.close()
+        picture_file = open(picture, 'r')
+        content = picture_file.read()
+        picture_file.close()
         return(hashlib.md5(content).hexdigest())
     
     def change(self):
         
-        OK = False
+        is_new_image = False
         
         self.create_filelist()
         
-        while not OK:
+        while not is_new_image:
             self.get_next_picture()
         
             self.convert_to_bmp()
             
             if (len(self.filelist) <= 1) or (self.get_hash(self.act_picture) != self.get_hash(BACKGROUND_IM)):
-                OK = True
+                is_new_image = True
             else:
                 os.remove(self.act_picture)
                      
