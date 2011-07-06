@@ -43,8 +43,8 @@ class Options():
 
 class Pictures():
     
-    def __init__(self, options):
-        self.options = options
+    def __init__(self, opts):
+        self.options = opts
         self.filelist = None
         self.create_filelist()        
         self.act_picture = None
@@ -119,7 +119,7 @@ class Pictures():
         img = Image.open(png_image)
         img.load()
         if len(img.split()) == 4:
-            r, g, b, a = img.split()
+            r, g, b, _ = img.split() # The "_" fixed the unused variable warning
             img = Image.merge("RGB", (r, g, b))
         filename = self.get_converted_filename()
         img.save(filename)
