@@ -73,8 +73,8 @@ class Pictures():
     def get_next_picture(self):
         random.seed()
         try:
-            i = random.randint(0,len(self.filelist)-1)
-            self.act_picture = options.pictures + '\\' + self.filelist[i]
+            picture = random.choice(self.filelist)
+            self.act_picture = options.pictures + '\\' + picture
         except ValueError:
             sys.exit("The " + self.options.pictures + " directory is empty. :(")
     
