@@ -8,6 +8,7 @@ import argparse
 import time
 
 from model import Pictures, Options
+from gui import Window
 
 VERSION = (0, 0, 0, 'alpha', 20110717)
 
@@ -42,11 +43,9 @@ if __name__ == "__main__":
         print('pictures     =', options.pictures)
     
     pictures = Pictures(options)
+    window = Window(pictures)
     if options.one_running:
-        pictures.change()
+        window.change_background()
     else:
-        while True:
-            pictures.change()
-            time.sleep(float(options.elapsed_time))
-        
+        window.change_background(timer=True)        
 
