@@ -38,7 +38,7 @@ class Window(QtGui.QDialog):
         self.trayIcon.show()
                 
     def set_icon(self):
-        icon = QtGui.QIcon(ICONS_PATH + 'lkwpchanger.ico')
+        icon = QtGui.QIcon(ICONS_PATH + 'lkwpchanger.png')
         self.trayIcon.setIcon(icon)
         self.setWindowIcon(icon)
         
