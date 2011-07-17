@@ -11,10 +11,13 @@ from PySide import QtGui
 
 from model import Pictures, Options
 from gui import Window, TimerThread
+from onering import Singleton
 
 VERSION = (0, 0, 0, 'alpha', 20110717)
 
 if __name__ == "__main__":
+    
+    s = Singleton()
     
     print("LK Wallpaper Changer mostly for Gabi's WinXP")
     
