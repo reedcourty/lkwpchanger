@@ -5,10 +5,12 @@ lkwpchanger
 """
 
 import argparse
-import time
+import sys
+
+from PySide import QtGui
 
 from model import Pictures, Options
-from gui import Window
+from gui import Window, TimerThread
 
 VERSION = (0, 0, 0, 'alpha', 20110717)
 
@@ -42,10 +44,22 @@ if __name__ == "__main__":
         print('elapsed_time =', options.elapsed_time)
         print('pictures     =', options.pictures)
     
+    app = QtGui.QApplication(sys.argv)
+    
+    if not QtGui.QSystemTrayIcon.isSystemTrayAvailable():
+        QtGui.QMessageBox.critical(None, "lkwpchanger",
+                                   "The application couldn't start.")
+        sys.exit(1)
+    
+    QtGui.QApplication.setQuitOnLastWindowClosed(False)
+    
     pictures = Pictures(options)
     window = Window(pictures)
+    timer = TimerThread(args=(window))
     if options.one_running:
         window.change_background()
     else:
-        window.change_background(timer=True)        
+        timer.start()
+    
+    sys.exit(app.exec_())  
 
