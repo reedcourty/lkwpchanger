@@ -82,23 +82,33 @@ class Pictures():
         
         self.create_filelist()
         
+        image_file_in_dir = False
+        for item in self.filelist:
+            if self.get_image_type(self.options.pictures + '\\' + item) \
+                != 'NO_IMAGE':
+                image_file_in_dir = True
+     
+        if not image_file_in_dir:
+            return            
+        
         while not is_new_image:
             self.get_next_picture()
         
-            self.convert_to_bmp()
+            converting_ok = self.convert_to_bmp()
             
-            if self.options.debug_mode:
-                pic_act = self.act_picture.split("\\")
-                pic_pre = BACKGROUND_IM.split("\\")
-                print(get_hash(self.act_picture), pic_act[len(pic_act)-1])
-                print(get_hash(BACKGROUND_IM), pic_pre[len(pic_pre)-1])
-            
-            if (len(self.filelist) <= 1) or \
-                (get_hash(self.act_picture) \
-                != get_hash(BACKGROUND_IM)):
-                is_new_image = True
-            else:
-                os.remove(self.act_picture)
+            if converting_ok:            
+                if self.options.debug_mode:
+                    pic_act = self.act_picture.split("\\")
+                    pic_pre = BACKGROUND_IM.split("\\")
+                    print(get_hash(self.act_picture), pic_act[len(pic_act)-1])
+                    print(get_hash(BACKGROUND_IM), pic_pre[len(pic_pre)-1])
+                
+                if (len(self.filelist) <= 1) or \
+                    (get_hash(self.act_picture) \
+                    != get_hash(BACKGROUND_IM)): \
+                    is_new_image = True
+                else:
+                    os.remove(self.act_picture)
                      
         shutil.copyfile(self.act_picture, BACKGROUND_IM)
         os.remove(self.act_picture)
@@ -107,8 +117,14 @@ class Pictures():
                                                    BACKGROUND_IM,
                                                    SPIF_SENDWININICHANGE)
    
-    def get_image_type(self):
-        img = Image.open(self.act_picture)
+    def get_image_type(self, image_file):
+        try:
+            img = Image.open(image_file)
+        except IOError as error:
+            if self.options.debug_mode:
+                print(image_file + ': ' + str(error))
+            if error[0] == "cannot identify image file":
+                return 'NO_IMAGE'
         return img.format
 
     def get_converted_filename(self):
@@ -140,11 +156,14 @@ class Pictures():
         self.act_picture = filename
         
     def convert_to_bmp(self):
-        itype = self.get_image_type()
-    
+        itype = self.get_image_type(self.act_picture)
+        
+        if itype == 'NO_IMAGE':
+            return False
         if itype == 'BMP':
             self.bmp_to_bmp(self.act_picture)
         if itype == 'PNG':
             self.png_to_bmp(self.act_picture)
         if itype == 'JPEG':
             self.jpg_to_bmp(self.act_picture)
+        return True

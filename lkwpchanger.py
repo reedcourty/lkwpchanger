@@ -13,7 +13,7 @@ from model import Pictures, Options
 from gui import Window, TimerThread
 from onering import Singleton
 
-VERSION = (0, 0, 0, 'alpha', 20110717)
+VERSION = (0, 0, 0, 'alpha', 20110723)
 
 if __name__ == "__main__":
     
